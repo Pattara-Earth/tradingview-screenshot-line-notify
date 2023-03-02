@@ -68,7 +68,7 @@ class ScreenshotTDV:
             })
 
     # Go to web page that has been wanted to scrape
-    def tdv_chat_page(self, driver):
+    def tdv_chart_page(self, driver):
         img_url = self.layout_image_url()
         driver.get(self._endpoint+f'/chart/{img_url}?client=chart&lang=en&symbol={self._exchange.upper()}%3A{self._symbol.upper()}&interval={self._interval}')
         
@@ -121,11 +121,11 @@ class ScreenshotTDV:
 
 if __name__ == '__main__':
     tdv = ScreenshotTDV(
-                username='richardnitiz.tradingview@gmail.com',
-                password='Boss12345*',
-                exchange='currencycom',
-                symbol='US30',
-                interval='15',
+                username='',
+                password='',
+                exchange='',
+                symbol='',
+                interval='',
     )
 
     tdv.main()
