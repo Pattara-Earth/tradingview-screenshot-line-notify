@@ -1,0 +1,5 @@
+format alert message >> exchange - symbol - interval - templates/strategies
+example >> {"message":"\nEIGHTCAP-GBPUSD-15\nBullish 4divergence\n(Confirmed)"}
+
+interval 1, 5, 15, 30, 60, 240, D, W, M
+
