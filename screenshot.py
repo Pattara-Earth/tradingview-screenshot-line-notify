@@ -108,7 +108,7 @@ class ScreenshotTDV:
         if self.login().status_code == 200:
             print('Login successfully!')
             self.auth_driver(driver)
-            self.tdv_chat_page(driver)
+            self.tdv_chart_page(driver)
             sleep(5)
             self.close_toolbar1(driver)
             self.close_toolbar2(driver)
