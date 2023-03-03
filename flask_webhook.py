@@ -42,6 +42,7 @@ def webhook():
         
         # # Notify message & image function
         notify_message(message)
+        print('-'*30)
         return req, 200
 
     elif request.method == 'GET':
