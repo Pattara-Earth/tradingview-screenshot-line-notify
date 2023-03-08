@@ -27,9 +27,9 @@ class ScreenshotTDV:
         self._session = Session()
         self._endpoint = 'https://www.tradingview.com'
         self._cookie_dict = {
-                        'device_t': 'Tlotdjox.d38bhhkwRI-yCufQoDniZbnfLrg1rYVPv2ewSpEZqHY', 
-                        'sessionid': 'nnbl58o6f9f7uicknf04v8zcb5ukk3ko', 
-                        'sessionid_sign': 'v1:Gscco9zQq5UAMUxP9hS/d+jMqonFGVnV+dGPH1Z7Pj4='
+                        'device_t': '', 
+                        'sessionid': '', 
+                        'sessionid_sign': ''
                         }
 
     warnings.filterwarnings("ignore")
