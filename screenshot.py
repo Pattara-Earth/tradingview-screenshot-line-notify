@@ -1,4 +1,5 @@
 import os
+import json
 import warnings
 from time import sleep
 from selenium import webdriver
@@ -49,6 +50,7 @@ class ScreenshotTDV:
         for lay in res.json():
             if lay['name'] == word:
                 image_url = lay['image_url']
+                print(f"{lay['name']}: {image_url}")
         return image_url
 
     # Select custom templates
@@ -57,6 +59,7 @@ class ScreenshotTDV:
         templates = [tem['name'] for tem in res.json()['custom']]
         result = self._word_matching(self._template, templates)
         tem_name = list(result.keys())[0]
+        print(f'Select tempalte: {tem_name}')
         return tem_name
 
     # Use session cookies to auth selenium driver
@@ -102,6 +105,7 @@ class ScreenshotTDV:
         driver.get(self._endpoint+f'/chart/{img_url}?client=chart&lang=en&symbol={self._exchange.upper()}%3A{self._symbol.upper()}&interval={self._interval}')
         sleep(2)
         self._handle_alert(driver)
+        print(f'Currently chart {self._exchange} {self._symbol} {self._interval}')
 
     # Close floating toolbar 
     def close_widgetbar(self, driver):
@@ -109,8 +113,9 @@ class ScreenshotTDV:
             driver.find_element(By.XPATH, ".//div[@title='Hide Tab']")
             element = driver.find_element(By.XPATH, "/html/body/div[2]/div[6]/div/div[3]/div")
             driver.execute_script("arguments[0].click();", element)
+            print("Closed widgetber")
         except:
-            print("Already closed widgetber")
+            print("No widgetber for closed")
 
     # Close floating toolbar 
     def close_toolbar(self, driver):
@@ -118,8 +123,9 @@ class ScreenshotTDV:
             driver.find_element(By.CLASS_NAME, "tv-floating-toolbar__widget-wrapper")
             element = driver.find_element(By.XPATH, "/html/body/div[2]/div[5]/div/div/div[1]/div/div/div[6]/div")
             driver.execute_script("arguments[0].click();", element)
+            print('Closed toolbar')
         except:
-            print('Already closed toolbar')
+            print('No toolbar for closed')
 
     # Close icon arrow
     def close_icon_arrow(self, driver):
@@ -127,13 +133,15 @@ class ScreenshotTDV:
             driver.find_element(By.XPATH, ".//div[@title='Hide Indicator Legend']")
             element = driver.find_element(By.XPATH, "/html/body/div[2]/div[1]/div[2]/div[1]/div/table/tr[1]/td[2]/div/div[2]/div[2]/div[1]/div[1]")
             driver.execute_script("arguments[0].click();", element)
+            print("Closed legend title")
         except:
-            print("Already closed legend title")
+            print("No legend title for closed")
 
     # Capture tdv chart
     def cap_screen_chart(self, driver, path:str):
         element = driver.find_element(By.CLASS_NAME, "chart-markup-table")
         element.screenshot(path+'\screenshot.png')
+        print('screenshot successfully!')
 
     def done(self, driver):
         driver.quit()
@@ -184,22 +192,27 @@ class ScreenshotTDV:
         options.add_argument('--headless')
         options.add_argument("window-size=1400,800")
         driver = webdriver.Chrome(executable_path=chr_path, options=options)
-
-        if self.login().status_code == 200:
-            print('Login successfully!')
-            self.auth_driver(driver)
-            self.set_template(driver)
-            self.tdv_chart_page(driver)
-            sleep(5)
-            self.close_widgetbar(driver)
-            self.close_toolbar(driver)
-            self.close_icon_arrow(driver)
-            sleep(3)
-            self.cap_screen_chart(driver, path)
-            print('screenshot successfully!')
-            self.done(driver)
+        res = self.login()
+        with open("captcha.json", "w") as f:
+                json.dump(res.json(), f)
+        if res.status_code == 200:
+            if 'captcha' in res.json()['error']:
+                print('Recaptcha required')
+            else:
+                print('Login successfully!')
+                self.auth_driver(driver)
+                self.set_template(driver)
+                self.tdv_chart_page(driver)
+                sleep(5)
+                self.close_widgetbar(driver)
+                self.close_toolbar(driver)
+                self.close_icon_arrow(driver)
+                sleep(3)
+                self.cap_screen_chart(driver, path)
+                self.done(driver)
         else:
             print('Login failed!')
+
 
 if __name__ == '__main__':
     tdv = ScreenshotTDV(
